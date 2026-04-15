@@ -18,7 +18,7 @@ async def upload_pdf(file: UploadFile):
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file,buffer)
-    chunks = load_and_split(buffer)
+    chunks = load_and_split(file_path)
     global db, qa_chain
     db = create_vectorstore(chunks)
     save_vectorstore(db)
@@ -32,5 +32,5 @@ def ask_question(query:str):
 
     if not qa_chain:
         return {"error": "Upload a document First"}
-    result = qa_chain.run(query)
+    result = qa_chain(query)
     return {"answer": result}
